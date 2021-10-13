@@ -29,8 +29,19 @@ class MainActivity : AppCompatActivity() {
         // Listens for when the app retrieves a list of Comic Issues to be able to update the View
         viewModel.issues.observe(this, {
             // Set API data to display in the RecyclerView
+            //val issueAdapter = IssueAdapter(this, it)
             rvIssues.adapter = IssueAdapter(this, it)
             rvIssues.layoutManager = LinearLayoutManager(this)
+
+            //issueAdapter
+            //    .userInteraction()
+            //    .subscribe { issue ->
+            //        run {
+            //            Log.i("PLEASE", "Second: ${issue.title}")
+            //            Toast.makeText(this, issue.title, Toast.LENGTH_SHORT).show()
+            //        }
+            //    }
+            //    .dispose()
         })
 
         val view = binding.root

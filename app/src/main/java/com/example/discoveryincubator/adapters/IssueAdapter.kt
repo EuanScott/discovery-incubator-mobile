@@ -51,6 +51,21 @@ class IssueAdapter(private val context: Context, private val issues: List<Issue>
                         Log.i(TAG, "There was an error: $e")
                     }
                 })
+
+            //itemView.setOnClickListener {
+            //    Log.i("PLEASE", "First: ${issue.title}")
+            //    publishSubject.onNext(issue)
+            //}
         }
+
+        //private fun createToast(toastMessage: String) {
+        //Observable.just(toastMessage)
+        //    .subscribe { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
+        //    .dispose()
+        //}
     }
+
+    //fun userInteraction(): Observable<Issue> {
+    //    return pubSub.hide()
+    //}
 }
