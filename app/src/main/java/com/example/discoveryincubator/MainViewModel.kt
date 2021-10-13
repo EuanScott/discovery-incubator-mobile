@@ -21,10 +21,24 @@ class MainViewModel : ViewModel() {
     /**
      * Retrieves a list of Comic Issues to be displayed to the user
      */
-    private fun getIssues() {
+    fun getIssues() {
         viewModelScope.launch {
             try {
                 val comicIssues = ComicApi.retrofitService.getIssues()
+                if (comicIssues.isNotEmpty()) _issues.value = comicIssues
+            } catch (e: Throwable) {
+                _issues.value = ArrayList()
+            }
+        }
+    }
+
+    /**
+     * Retrieve a list of Comic Issues based on the search term provided by the user
+     */
+    fun getIssueByName(name: String) {
+        viewModelScope.launch {
+            try {
+                val comicIssues = ComicApi.retrofitService.getIssueByName(name)
                 if (comicIssues.isNotEmpty()) _issues.value = comicIssues
             } catch (e: Throwable) {
                 _issues.value = ArrayList()
