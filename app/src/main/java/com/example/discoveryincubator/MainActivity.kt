@@ -1,9 +1,11 @@
 package com.example.discoveryincubator
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.discoveryincubator.adapters.IssueAdapter
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,10 +21,9 @@ class MainActivity : AppCompatActivity() {
 
         // Listens for when the app retrieves a list of Comic Issues to be able to update the View
         viewModel.issues.observe(this, {
-            // For test purposes, just log the title of the comics
-            for (i in it) {
-                Log.i(TAG, i.title)
-            }
+            // Set API data to display in the RecyclerView
+            rvIssues.adapter = IssueAdapter(this, it)
+            rvIssues.layoutManager = LinearLayoutManager(this)
         })
     }
 }
