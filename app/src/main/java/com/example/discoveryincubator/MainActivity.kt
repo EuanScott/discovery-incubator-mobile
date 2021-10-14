@@ -3,7 +3,9 @@ package com.example.discoveryincubator
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,19 +31,19 @@ class MainActivity : AppCompatActivity() {
         // Listens for when the app retrieves a list of Comic Issues to be able to update the View
         viewModel.issues.observe(this, {
             // Set API data to display in the RecyclerView
-            //val issueAdapter = IssueAdapter(this, it)
-            rvIssues.adapter = IssueAdapter(this, it)
+            val issueAdapter = IssueAdapter(this, it)
+            rvIssues.adapter = issueAdapter
             rvIssues.layoutManager = LinearLayoutManager(this)
 
-            //issueAdapter
-            //    .userInteraction()
-            //    .subscribe { issue ->
-            //        run {
-            //            Log.i("PLEASE", "Second: ${issue.title}")
-            //            Toast.makeText(this, issue.title, Toast.LENGTH_SHORT).show()
-            //        }
-            //    }
-            //    .dispose()
+            issueAdapter
+                .userInteraction()
+                .subscribe { issue ->
+                    run {
+                        Log.i("PLEASE", "Second: ${issue.title}")
+                        Toast.makeText(this, issue.title, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                //.dispose()
         })
 
         val view = binding.root
