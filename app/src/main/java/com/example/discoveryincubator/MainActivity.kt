@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import io.reactivex.rxjava3.schedulers.Schedulers
 import android.widget.Toast
+import com.example.discoveryincubator.models.Issue
 
 
 class MainActivity : AppCompatActivity() {
@@ -24,21 +25,26 @@ class MainActivity : AppCompatActivity() {
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .subscribe(
-                {
-                    if (it.isNotEmpty()) {
-                        for (i in it) {
-                            Log.i(TAG, i.title)
-                        }
-                    } else {
-                        displayToast("An unexpected error occurred. Please try again.")
-                    }
-                },
-                { error ->
-                    Log.i("pls", "onError: $error")
-                    displayToast("Unable to fetch Issue data. Please try again")
-                }
+                { onSuccessIssuesReceived(it) },
+                { onErrorNoIssues(it) }
             )
     }
+
+    private fun onSuccessIssuesReceived(issues: List<Issue>) {
+        if (issues.isNotEmpty()) {
+            for (issue in issues) {
+                Log.i(TAG, issue.title)
+            }
+        } else {
+            displayToast("An unexpected error occurred. Please try again.")
+        }
+    }
+
+    private fun onErrorNoIssues(error: Throwable) {
+        Log.i("pls", "onError: $error")
+        displayToast("Unable to fetch Issue data. Please try again")
+    }
+
 
     // https://stackoverflow.com/a/12897386
     private fun displayToast(toastMessage: String) {
