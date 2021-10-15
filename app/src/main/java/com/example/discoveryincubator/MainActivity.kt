@@ -15,6 +15,7 @@ import com.example.discoveryincubator.databinding.ActivityMainBinding
 import com.example.discoveryincubator.models.Issue
 import com.example.discoveryincubator.services.IssuesSearch
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -25,6 +26,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: ActivityMainBinding
     private lateinit var userSearchTerm: String
+
+    private var adapterObservable: Disposable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,9 +72,17 @@ class MainActivity : AppCompatActivity() {
     private fun onSuccessIssuesReceived(issues: List<Issue>) {
         if (issues.isNotEmpty()) {
             runOnUiThread {
+                if (adapterObservable != null && !adapterObservable!!.isDisposed) {
+                    adapterObservable!!.dispose()
+                }
+
                 val issueAdapter = IssueAdapter(this, issues)
                 rvIssues.adapter = issueAdapter
                 rvIssues.layoutManager = LinearLayoutManager(this)
+
+                adapterObservable = issueAdapter
+                    .userInteraction()
+                    .subscribe { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
             }
         } else {
             displayToast("An unexpected error occurred. Please try again.")

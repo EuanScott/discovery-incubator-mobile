@@ -10,12 +10,16 @@ import com.example.discoveryincubator.R
 import com.example.discoveryincubator.models.Issue
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.item_issue.view.*
 
 class IssueAdapter(private val context: Context, private val issues: List<Issue>) :
     RecyclerView.Adapter<IssueAdapter.IssueViewHolder>() {
 
     private val TAG: String = IssueAdapter::class.java.name
+
+    val itemTappedSubject: PublishSubject<String> = PublishSubject.create()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IssueViewHolder {
         return IssueViewHolder(
@@ -51,6 +55,14 @@ class IssueAdapter(private val context: Context, private val issues: List<Issue>
                         Log.i(TAG, "There was an error: $e")
                     }
                 })
+
+            itemView.setOnClickListener {
+                itemTappedSubject.onNext(issue.title)
+            }
         }
+    }
+
+    fun userInteraction(): Observable<String> {
+        return itemTappedSubject.hide()
     }
 }
