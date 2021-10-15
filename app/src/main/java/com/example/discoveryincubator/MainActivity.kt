@@ -13,8 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.discoveryincubator.adapters.IssueAdapter
 import com.example.discoveryincubator.databinding.ActivityMainBinding
 import com.example.discoveryincubator.models.Issue
-import com.example.discoveryincubator.services.IssueSearch
-import io.reactivex.rxjava3.schedulers.Schedulers
+import com.example.discoveryincubator.services.IssuesSearch
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        displayIssueList()
+        displayIssueList(null)
 
         val view = binding.root
         val etSearchInput = binding.etSearchInput
@@ -46,10 +47,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
     }
 
-    private fun displayIssueList() {
-        viewModel.issuesPlsWork
+    private fun displayIssueList(userSearchTerm: String?) {
+        viewModel.getIssueList(IssuesSearch(userSearchTerm))
             .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { onSuccessIssuesReceived(it) },
                 { onErrorNoIssues(it) }
@@ -58,8 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getIssuesByFilter(actionId: Int): Boolean {
         return if (actionId == EditorInfo.IME_ACTION_DONE) {
-            viewModel.getIssueList(IssueSearch(userSearchTerm))
-            displayIssueList()
+            displayIssueList(userSearchTerm)
             true
         } else {
             false
@@ -69,7 +69,8 @@ class MainActivity : AppCompatActivity() {
     private fun onSuccessIssuesReceived(issues: List<Issue>) {
         if (issues.isNotEmpty()) {
             runOnUiThread {
-                rvIssues.adapter = IssueAdapter(this, issues)
+                val issueAdapter = IssueAdapter(this, issues)
+                rvIssues.adapter = issueAdapter
                 rvIssues.layoutManager = LinearLayoutManager(this)
             }
         } else {
@@ -99,8 +100,7 @@ class MainActivity : AppCompatActivity() {
                 userSearchTerm = s.toString()
 
                 if (userSearchTerm.isEmpty()) {
-                    viewModel.getIssueList(IssueSearch(null))
-                    displayIssueList()
+                    displayIssueList(null)
                 }
             }
         })

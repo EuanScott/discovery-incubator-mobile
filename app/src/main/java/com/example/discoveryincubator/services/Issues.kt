@@ -1,3 +1,5 @@
 package com.example.discoveryincubator.services
 
-data class IssueSearch(val title: String?)
+data class IssuesSearch (
+    val title: String?
+)

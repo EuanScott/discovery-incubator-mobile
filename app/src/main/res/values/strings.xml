@@ -1,9 +1,4 @@
 <resources>
     <string name="app_name">Discovery Incubator</string>
     <string name="search">Search</string>
-
-    <string name="placeholder_date">13 March 2015</string>
-    <string name="placeholder_short">Bacon ipsum</string>
-    <string name="placeholder_medium">Biltong tenderloin ribeye ham</string>
-    <string name="placeholder_long">Pork chop shankle cupim, corned beef swine pork boudin. Turkey burgdoggen strip steak t-bone kielbasa fatback cow leberkas corned beef salami porchetta filet mignon jerky</string>
 </resources>

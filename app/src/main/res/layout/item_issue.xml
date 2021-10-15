@@ -9,13 +9,13 @@
         android:id="@+id/cardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/gutter_1"
-        android:layout_marginTop="@dimen/gutter_1"
-        android:layout_marginEnd="@dimen/gutter_1"
-        android:layout_marginBottom="@dimen/gutter_1"
-        app:cardCornerRadius="@dimen/gutter_0_5"
-        app:cardElevation="@dimen/gutter_0_5"
-        app:cardMaxElevation="@dimen/gutter_0_5"
+        android:layout_marginStart="@dimen/gutterspace"
+        android:layout_marginTop="@dimen/gutterspace"
+        android:layout_marginEnd="@dimen/gutterspace"
+        android:layout_marginBottom="@dimen/gutterspace"
+        app:cardCornerRadius="@dimen/gutterspace_half"
+        app:cardElevation="@dimen/gutterspace_half"
+        app:cardMaxElevation="@dimen/gutterspace_half"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,41 +29,41 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/gutter_1"
-                android:layout_marginTop="@dimen/gutter_1"
-                android:text="@string/placeholder_medium"
+                android:layout_marginStart="@dimen/gutterspace"
+                android:layout_marginTop="@dimen/gutterspace"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Comic Title" />
 
             <TextView
                 android:id="@+id/tvPublisher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gutter_0_5"
-                android:text="@string/placeholder_short"
+                android:layout_marginTop="@dimen/gutterspace_half"
                 app:layout_constraintStart_toStartOf="@+id/tvTitle"
-                app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+                app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+                tools:text="Publisher" />
 
             <TextView
                 android:id="@+id/tvPublicationDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gutter_0_5"
-                android:text="@string/placeholder_date"
+                android:layout_marginTop="@dimen/gutterspace_half"
                 app:layout_constraintStart_toStartOf="@+id/tvPublisher"
-                app:layout_constraintTop_toBottomOf="@+id/tvPublisher" />
+                app:layout_constraintTop_toBottomOf="@+id/tvPublisher"
+                tools:text="13 March 2015" />
 
             <ImageView
                 android:id="@+id/ivCover"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gutter_1"
-                android:layout_marginBottom="@dimen/gutter_1"
-                android:contentDescription="@string/placeholder_short"
+                android:layout_marginTop="@dimen/gutterspace"
+                android:layout_marginBottom="@dimen/gutterspace"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvPublicationDate"
+                tools:contentDescription="Image Title"
                 tools:ignore="MissingConstraints"
                 tools:srcCompat="@drawable/ic_launcher_background" />
         </androidx.constraintlayout.widget.ConstraintLayout>
