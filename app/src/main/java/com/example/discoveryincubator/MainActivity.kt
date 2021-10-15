@@ -14,6 +14,7 @@ import com.example.discoveryincubator.adapters.IssueAdapter
 import com.example.discoveryincubator.databinding.ActivityMainBinding
 import com.example.discoveryincubator.models.Issue
 import com.example.discoveryincubator.services.IssueSearch
+import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -25,6 +26,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var userSearchTerm: String
 
+    private var adapterObservable: Disposable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        displayIssueList()
+        displayIssueList(null)
 
         val view = binding.root
         val etSearchInput = binding.etSearchInput
@@ -43,31 +46,11 @@ class MainActivity : AppCompatActivity() {
 
         bSearch.setOnClickListener { getIssuesByFilter(actionId = 6) }
 
-
-
-        // Listens for when the app retrieves a list of Comic Issues to be able to update the View
-        //viewModel.issues.observe(this, {
-        //    // Set API data to display in the RecyclerView
-        //    val issueAdapter = IssueAdapter(this, it)
-        //    rvIssues.adapter = issueAdapter
-        //    rvIssues.layoutManager = LinearLayoutManager(this)
-        //
-        //    issueAdapter
-        //        .userInteraction()
-        //        .subscribe { issue ->
-        //            run {
-        //                Log.i("PLEASE", "Second: ${issue.title}")
-        //                Toast.makeText(this, issue.title, Toast.LENGTH_SHORT).show()
-        //            }
-        //        }
-        //    //.dispose()
-        //})
-
         setContentView(view)
     }
 
-    private fun displayIssueList() {
-        viewModel.issuesPlsWork
+    private fun displayIssueList(userSearchTerm: String?) {
+        viewModel.getIssueList(IssueSearch(userSearchTerm))
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .subscribe(
@@ -78,8 +61,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getIssuesByFilter(actionId: Int): Boolean {
         return if (actionId == EditorInfo.IME_ACTION_DONE) {
-            viewModel.getIssueList(IssueSearch(userSearchTerm))
-            displayIssueList()
+            displayIssueList(userSearchTerm)
             true
         } else {
             false
@@ -89,8 +71,17 @@ class MainActivity : AppCompatActivity() {
     private fun onSuccessIssuesReceived(issues: List<Issue>) {
         if (issues.isNotEmpty()) {
             runOnUiThread {
-                rvIssues.adapter = IssueAdapter(this, issues)
+                if (adapterObservable != null && !adapterObservable!!.isDisposed) {
+                    adapterObservable!!.dispose()
+                }
+
+                val issueAdapter = IssueAdapter(this, issues)
+                rvIssues.adapter = issueAdapter
                 rvIssues.layoutManager = LinearLayoutManager(this)
+
+                adapterObservable = issueAdapter
+                    .userInteraction()
+                    .subscribe { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
             }
         } else {
             displayToast("An unexpected error occurred. Please try again.")
@@ -119,8 +110,7 @@ class MainActivity : AppCompatActivity() {
                 userSearchTerm = s.toString()
 
                 if (userSearchTerm.isEmpty()) {
-                    viewModel.getIssueList(IssueSearch(null))
-                    displayIssueList()
+                    displayIssueList(null)
                 }
             }
         })

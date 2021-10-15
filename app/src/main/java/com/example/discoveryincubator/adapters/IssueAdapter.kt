@@ -19,7 +19,7 @@ class IssueAdapter(private val context: Context, private val issues: List<Issue>
 
     private val TAG: String = IssueAdapter::class.java.name
 
-    val pubSub = PublishSubject.create<Issue>()
+    val itemTappedSubject: PublishSubject<String> = PublishSubject.create()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IssueViewHolder {
         return IssueViewHolder(
@@ -57,19 +57,12 @@ class IssueAdapter(private val context: Context, private val issues: List<Issue>
                 })
 
             itemView.setOnClickListener {
-                Log.i("PLEASE", "First: ${issue.title}")
-                pubSub.onNext(issue)
+                itemTappedSubject.onNext(issue.title)
             }
         }
-
-        //private fun createToast(toastMessage: String) {
-        //Observable.just(toastMessage)
-        //    .subscribe { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
-        //    .dispose()
-        //}
     }
 
-    fun userInteraction(): Observable<Issue> {
-        return pubSub.hide()
+    fun userInteraction(): Observable<String> {
+        return itemTappedSubject.hide()
     }
 }
