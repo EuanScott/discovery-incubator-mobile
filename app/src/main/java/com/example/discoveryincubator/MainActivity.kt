@@ -5,9 +5,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.discoveryincubator.adapters.IssueAdapter
 import com.example.discoveryincubator.models.Issue
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,19 +35,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun onSuccessIssuesReceived(issues: List<Issue>) {
         if (issues.isNotEmpty()) {
-            for (issue in issues) {
-                Log.i(TAG, issue.title)
-            }
+            rvIssues.adapter = IssueAdapter(this, issues)
+            rvIssues.layoutManager = LinearLayoutManager(this)
         } else {
             displayToast("An unexpected error occurred. Please try again.")
         }
     }
 
     private fun onErrorNoIssues(error: Throwable) {
-        Log.i("pls", "onError: $error")
+        Log.i(TAG, "onError: $error")
         displayToast("Unable to fetch Issue data. Please try again")
     }
-
 
     // https://stackoverflow.com/a/12897386
     private fun displayToast(toastMessage: String) {
