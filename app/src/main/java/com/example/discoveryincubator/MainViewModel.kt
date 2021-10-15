@@ -7,7 +7,7 @@ import com.example.discoveryincubator.services.IssuesSearch
 import io.reactivex.Observable
 
 class MainViewModel : ViewModel() {
-    fun getIssueList(): Observable<List<Issue>> {
-        return ComicApi.retrofitService.getIssues(IssuesSearch(null))
+    fun getIssueList(searchIssues: IssuesSearch): Observable<List<Issue>> {
+        return ComicApi.retrofitService.getIssues(searchIssues)
     }
 }
