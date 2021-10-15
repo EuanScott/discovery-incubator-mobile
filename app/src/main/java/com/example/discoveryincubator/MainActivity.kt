@@ -13,9 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.discoveryincubator.adapters.IssueAdapter
 import com.example.discoveryincubator.databinding.ActivityMainBinding
 import com.example.discoveryincubator.models.Issue
-import com.example.discoveryincubator.services.IssueSearch
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import com.example.discoveryincubator.services.IssuesSearch
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -50,9 +51,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun displayIssueList(userSearchTerm: String?) {
-        viewModel.getIssueList(IssueSearch(userSearchTerm))
+        viewModel.getIssueList(IssuesSearch(userSearchTerm))
             .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { onSuccessIssuesReceived(it) },
                 { onErrorNoIssues(it) }

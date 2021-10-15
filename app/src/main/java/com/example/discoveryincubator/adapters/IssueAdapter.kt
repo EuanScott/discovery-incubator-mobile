@@ -10,8 +10,8 @@ import com.example.discoveryincubator.R
 import com.example.discoveryincubator.models.Issue
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import io.reactivex.rxjava3.subjects.PublishSubject
-import io.reactivex.rxjava3.core.Observable
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.item_issue.view.*
 
 class IssueAdapter(private val context: Context, private val issues: List<Issue>) :
