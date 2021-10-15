@@ -2,8 +2,8 @@ package com.example.discoveryincubator
 
 import androidx.lifecycle.ViewModel
 import com.example.discoveryincubator.models.Issue
-import com.example.discoveryincubator.models.SearchIssues
 import com.example.discoveryincubator.network.ComicApi
+import com.example.discoveryincubator.services.IssueSearch
 import io.reactivex.rxjava3.core.Observable
 
 class MainViewModel : ViewModel() {
@@ -11,14 +11,10 @@ class MainViewModel : ViewModel() {
     lateinit var issuesPlsWork: Observable<List<Issue>>
 
     init {
-        val searchIssues = SearchIssues(null)
-        getIssues(searchIssues)
+        getIssueList(IssueSearch(null))
     }
 
-    /**
-     * Retrieves a list of Comic Issues to be displayed to the user
-     */
-    private fun getIssues(searchIssues: SearchIssues) {
+    fun getIssueList(searchIssues: IssueSearch) {
         issuesPlsWork = ComicApi.retrofitService.getIssues(searchIssues)
     }
 }

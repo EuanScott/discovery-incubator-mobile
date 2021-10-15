@@ -2,4 +2,5 @@
 <resources>
     <dimen name="gutter_0_5">8dp</dimen>
     <dimen name="gutter_1">16dp</dimen>
+    <dimen name="gutter_3">48dp</dimen>
 </resources>

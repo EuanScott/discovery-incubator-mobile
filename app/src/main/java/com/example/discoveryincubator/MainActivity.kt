@@ -1,21 +1,21 @@
 package com.example.discoveryincubator
 
-import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import io.reactivex.rxjava3.schedulers.Schedulers
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.discoveryincubator.adapters.IssueAdapter
-import com.example.discoveryincubator.models.Issue
 import com.example.discoveryincubator.databinding.ActivityMainBinding
+import com.example.discoveryincubator.models.Issue
+import com.example.discoveryincubator.services.IssueSearch
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,10 +32,21 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
+        displayIssueList()
+
         val view = binding.root
         val etSearchInput = binding.etSearchInput
         val bSearch = binding.bSearch
 
+        etSearchInput.textChangedListener()
+        etSearchInput.setOnEditorActionListener { _, actionId, _ -> getIssuesByFilter(actionId) }
+
+        bSearch.setOnClickListener { getIssuesByFilter(actionId = 6) }
+
+        setContentView(view)
+    }
+
+    private fun displayIssueList() {
         viewModel.issuesPlsWork
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
@@ -43,33 +54,16 @@ class MainActivity : AppCompatActivity() {
                 { onSuccessIssuesReceived(it) },
                 { onErrorNoIssues(it) }
             )
+    }
 
-        etSearchInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(
-                s: CharSequence,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                userSearchTerm = s.toString()
-
-                if (userSearchTerm.isEmpty()) {
-                    viewModel.getIssues()
-                }
-            }
-        })
-
-        etSearchInput.setOnEditorActionListener { _, actionId, _ ->
-            handleDoneButton(actionId)
+    private fun getIssuesByFilter(actionId: Int): Boolean {
+        return if (actionId == EditorInfo.IME_ACTION_DONE) {
+            viewModel.getIssueList(IssueSearch(userSearchTerm))
+            displayIssueList()
+            true
+        } else {
+            false
         }
-
-        bSearch.setOnClickListener { handleDoneButton(6) }
-
-        setContentView(view)
     }
 
     private fun onSuccessIssuesReceived(issues: List<Issue>) {
@@ -95,12 +89,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleDoneButton(actionId: Int): Boolean {
-        return if (actionId == EditorInfo.IME_ACTION_DONE) {
-            viewModel.getIssueByName(userSearchTerm)
-            true
-        } else {
-            false
-        }
+    private fun EditText.textChangedListener() {
+        addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                userSearchTerm = s.toString()
+
+                if (userSearchTerm.isEmpty()) {
+                    viewModel.getIssueList(IssueSearch(null))
+                    displayIssueList()
+                }
+            }
+        })
     }
 }
