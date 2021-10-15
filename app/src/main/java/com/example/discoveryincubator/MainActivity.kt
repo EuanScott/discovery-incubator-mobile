@@ -2,12 +2,12 @@ package com.example.discoveryincubator
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import io.reactivex.rxjava3.schedulers.Schedulers
-import android.widget.Toast
 import com.example.discoveryincubator.models.Issue
-
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,12 +21,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        viewModel.issuesPlsWork
+        viewModel.getIssueList()
             .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { onSuccessIssuesReceived(it) },
-                { onErrorNoIssues(it) }
+                { onSuccess -> onSuccessIssuesReceived(onSuccess) },
+                { onError -> onErrorNoIssues(onError) }
             )
     }
 
