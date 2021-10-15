@@ -1,11 +1,13 @@
 package com.example.discoveryincubator
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.discoveryincubator.adapters.IssueAdapter
-import kotlinx.android.synthetic.main.activity_main.*
+import io.reactivex.rxjava3.schedulers.Schedulers
+import android.widget.Toast
+import com.example.discoveryincubator.models.Issue
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,11 +21,35 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        // Listens for when the app retrieves a list of Comic Issues to be able to update the View
-        viewModel.issues.observe(this, {
-            // Set API data to display in the RecyclerView
-            rvIssues.adapter = IssueAdapter(this, it)
-            rvIssues.layoutManager = LinearLayoutManager(this)
-        })
+        viewModel.issuesPlsWork
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe(
+                { onSuccessIssuesReceived(it) },
+                { onErrorNoIssues(it) }
+            )
+    }
+
+    private fun onSuccessIssuesReceived(issues: List<Issue>) {
+        if (issues.isNotEmpty()) {
+            for (issue in issues) {
+                Log.i(TAG, issue.title)
+            }
+        } else {
+            displayToast("An unexpected error occurred. Please try again.")
+        }
+    }
+
+    private fun onErrorNoIssues(error: Throwable) {
+        Log.i("pls", "onError: $error")
+        displayToast("Unable to fetch Issue data. Please try again")
+    }
+
+
+    // https://stackoverflow.com/a/12897386
+    private fun displayToast(toastMessage: String) {
+        runOnUiThread {
+            Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show()
+        }
     }
 }
