@@ -10,32 +10,32 @@ import com.example.discoveryincubator.R
 import com.example.discoveryincubator.models.Issue
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.core.Observable
 import kotlinx.android.synthetic.main.item_issue.view.*
 
 class IssueAdapter(private val context: Context, private val issues: List<Issue>) :
-    RecyclerView.Adapter<IssueAdapter.ViewHolder>() {
+    RecyclerView.Adapter<IssueAdapter.IssueViewHolder>() {
 
     private val TAG: String = IssueAdapter::class.java.name
 
     val pubSub = PublishSubject.create<Issue>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IssueViewHolder {
+        return IssueViewHolder(
             LayoutInflater
                 .from(context)
                 .inflate(R.layout.item_issue, parent, false)
         )
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: IssueViewHolder, position: Int) {
         holder.bind(issues[position])
     }
 
     override fun getItemCount() = issues.size
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class IssueViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(issue: Issue) {
             itemView.tvTitle.text = issue.title
             itemView.tvPublicationDate.text = issue.publicationDate
